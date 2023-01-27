@@ -1,16 +1,22 @@
 function stockAlerts() {
+    const IS_TEST_MODE_SETTING = "IsTestModeSetting";
+    const EMAIL_RECIPIENT_SETTING = "EmailRecipientSetting";
+    const PRICE_TARGET_RULES_RANGE = "PriceTargetRules";
+    const ABOVE_TARGET_COMPARISON = "AboveTarget";
+    const BELOW_TARGET_COMPARISON = "BelowTarget";
+
     const currentTime = Date.now();
 
     const isTestMode = SpreadsheetApp.getActiveSpreadsheet()
-        .getRangeByName("IsTestModeSetting")
+        .getRangeByName(IS_TEST_MODE_SETTING)
         .getValues()[0][0];
 
     const emailRecipient = SpreadsheetApp.getActiveSpreadsheet()
-        .getRangeByName("EmailRecipientSetting")
+        .getRangeByName(EMAIL_RECIPIENT_SETTING)
         .getValues()[0][0];
 
     const priceTargetRules = SpreadsheetApp.getActiveSpreadsheet()
-        .getRangeByName("PriceTargetRules")
+        .getRangeByName(PRICE_TARGET_RULES_RANGE)
         .getValues();
 
     function sendEmail(subject, body) {
@@ -42,7 +48,7 @@ function stockAlerts() {
         if (Date.parse(endDate) < currentTime) continue;
 
         switch (comparison) {
-            case "AboveTarget":
+            case ABOVE_TARGET_COMPARISON:
                 if (currentPrice > targetPrice) {
                     sendEmail(
                         `Stock Alerts: ${ticker} ($${currentPrice}) above target`,
@@ -50,7 +56,7 @@ function stockAlerts() {
                     );
                 }
                 break;
-            case "BelowTarget":
+            case BELOW_TARGET_COMPARISON:
                 if (currentPrice < targetPrice) {
                     sendEmail(
                         `Stock Alerts: ${ticker} ($${currentPrice}) below target`,
