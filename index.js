@@ -19,13 +19,15 @@ function stockAlerts() {
         .getRangeByName(PRICE_TARGET_RULES_RANGE)
         .getValues();
 
+    function bold(text) {
+        return `<strong>${text}</strong>`;
+    }
+
     function sendEmail(subject, body) {
         if (isTestMode) {
             console.log("Send email ...", emailRecipient, subject, body);
         } else {
-            MailApp.sendEmail(emailRecipient, subject, body, {
-                noReply: true
-            });
+            MailApp.sendEmail({ to: emailRecipient, subject, htmlBody: body, noReply: true });
         }
     }
 
@@ -34,14 +36,13 @@ function stockAlerts() {
         isEnabled,
         comparison,
         targetPrice,
+        currency,
         startDate,
         endDate,
         ruleId,
-        name,
-        currentPrice,
-        currency
+        currentPrice
     ] of priceTargetRules) {
-        if (ticker === "") break;
+        if (ticker === new String) break;
 
         if (!isEnabled) continue;
         if (Date.parse(startDate) > currentTime) continue;
@@ -51,16 +52,16 @@ function stockAlerts() {
             case ABOVE_TARGET_COMPARISON:
                 if (currentPrice > targetPrice) {
                     sendEmail(
-                        `Stock Alerts: ${ticker} ($${currentPrice}) above target`,
-                        `${ticker} (${name}) is $${currentPrice} which is above $${targetPrice} (${currency}). Rule ID: ${ruleId}`
+                        `Stock Alerts: ${ticker} ($${currentPrice}) is above target`,
+                        `${bold(ticker)} is ${bold("$" + currentPrice)} which is ${bold(`above $${targetPrice}`)} (${currency}). Rule ID: ${ruleId}`
                     );
                 }
                 break;
             case BELOW_TARGET_COMPARISON:
                 if (currentPrice < targetPrice) {
                     sendEmail(
-                        `Stock Alerts: ${ticker} ($${currentPrice}) below target`,
-                        `${ticker} (${name}) is $${currentPrice} which is below $${targetPrice} (${currency}). Rule ID: ${ruleId}`
+                        `Stock Alerts: ${ticker} ($${currentPrice}) is below target`,
+                        `${bold(ticker)} is ${bold("$" + currentPrice)} which is ${bold(`below $${targetPrice}`)} (${currency}). Rule ID: ${ruleId}`
                     );
                 }
                 break;
